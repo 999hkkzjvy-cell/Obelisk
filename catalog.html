@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="译林方尖碑完整书目 — 涵盖世界史、方小碑·文化史、在故宫系列全部已出版书籍。">
+<title>书目总览 — 译林方尖碑 OBELISK</title>
+<link rel="preload" as="image" href="images/方尖碑LOGO.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===== Top Navigation ===== -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand"><img src="images/方尖碑LOGO.png" alt="方尖碑" class="logo-icon"> 译林方尖碑</a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="菜单">☰</button>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="catalog.html" class="active">书目</a>
+      <a href="plans.html">出版计划</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== Header ===== -->
+<header class="hero" style="padding:60px 24px 48px">
+  <div class="hero-content">
+    <h1 style="font-size:clamp(1.6rem,3vw,2.4rem)">📚 完整书目</h1>
+    <p class="tagline">共 <span id="totalCount"></span> 种已出版 · 持续更新中</p>
+  </div>
+</header>
+
+<!-- ===== Search & Filter ===== -->
+<section class="section">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="搜索书名、作者、译者……" oninput="applyFilters()">
+  </div>
+
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" data-filter="all">📚 全部</button>
+    <button class="filter-btn" data-filter="世界史">🏛 世界史</button>
+    <button class="filter-btn" data-filter="方小碑">📖 方小碑</button>
+    <button class="filter-btn" data-filter="在故宫">🏯 在故宫</button>
+  </div>
+
+  <!-- ===== Book Grid ===== -->
+  <div class="book-grid" id="bookGrid"></div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer class="site-footer">
+  <p class="brand">译林方尖碑 OBELISK</p>
+  <p>铭刻值得记忆的过去 · 积书成碑 · 立碑成林</p>
+  <p style="margin-top:16px">© 2020–2026 译林出版社 · 本页面由书友整理，数据来源为公开信息</p>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/utils.js"></script>
+<script>
+  const grid = document.getElementById('bookGrid');
+  const searchInput = document.getElementById('searchInput');
+  let activeFilter = 'all';
+
+  // Check URL for series param
+  const urlSeries = getUrlParam('series');
+  if (urlSeries) {
+    activeFilter = urlSeries;
+    // Update filter button state
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.dataset.filter === urlSeries) btn.classList.add('active');
+    });
+  }
+
+  document.getElementById('totalCount').textContent = books.length;
+
+  // Filter buttons
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      activeFilter = this.dataset.filter;
+      applyFilters();
+    });
+  });
+
+  function applyFilters() {
+    const query = searchInput.value.toLowerCase();
+    let filtered = books;
+
+    if (activeFilter !== 'all') {
+      filtered = filtered.filter(b => b.series === activeFilter);
+    }
+    if (query) {
+      filtered = filtered.filter(b =>
+        b.title.toLowerCase().includes(query) ||
+        b.author.toLowerCase().includes(query) ||
+        b.translator.toLowerCase().includes(query) ||
+        b.pubDate.includes(query)
+      );
+    }
+
+    renderCatalog(filtered);
+  }
+
+  function renderCatalog(filteredBooks) {
+    if (filteredBooks.length === 0) {
+      grid.innerHTML = `
+        <div class="no-results">
+          <div class="icon">📭</div>
+          <h3>没有找到匹配的书籍</h3>
+          <p>试试调整搜索词或筛选条件</p>
+        </div>
+      `;
+      return;
+    }
+
+    // Sort books: by series group, then by id
+    const sorted = [...filteredBooks].sort((a, b) => {
+      const seriesOrder = { '世界史': 0, '方小碑': 1, '在故宫': 2 };
+      const sa = seriesOrder[a.series] ?? 3;
+      const sb = seriesOrder[b.series] ?? 3;
+      if (sa !== sb) return sa - sb;
+      return a.id.localeCompare(b.id);
+    });
+
+    let html = '';
+    let lastSeries = '';
+    let lastYear = '';
+
+    sorted.forEach(b => {
+      // Series header
+      if (b.series !== lastSeries) {
+        lastSeries = b.series;
+        lastYear = '';
+        const info = getSeriesInfo(b.series);
+        html += `
+          <div class="subseries-header">
+            <h3>${info.icon} ${info.name}</h3>
+            <p>${info.desc}</p>
+          </div>
+        `;
+      }
+
+      // Year divider (only for 世界史)
+      if (b.series === '世界史' && b.year !== lastYear) {
+        lastYear = b.year;
+        html += `<div class="year-divider">${b.year}年</div>`;
+      }
+
+      html += renderBookCard(b);
+    });
+
+    grid.innerHTML = html;
+  }
+
+  // Initial render
+  applyFilters();
+</script>
+
+</body>
+</html>

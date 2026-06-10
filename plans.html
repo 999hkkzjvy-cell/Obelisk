@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="译林方尖碑出版计划 — 即将推出的世界史、方小碑·文化史、在故宫、山海系列新书。">
+<title>出版计划 — 译林方尖碑 OBELISK</title>
+<link rel="preload" as="image" href="images/方尖碑LOGO.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===== Top Navigation ===== -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand"><img src="images/方尖碑LOGO.png" alt="方尖碑" class="logo-icon"> 译林方尖碑</a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="菜单">☰</button>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="catalog.html">书目</a>
+      <a href="plans.html" class="active">出版计划</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== Header ===== -->
+<header class="hero" style="padding:60px 24px 48px">
+  <div class="hero-content">
+    <h1 style="font-size:clamp(1.6rem,3vw,2.4rem)">📋 出版计划</h1>
+    <p class="tagline">未来可期 · 立碑成林</p>
+  </div>
+</header>
+
+<!-- ===== Plans Content ===== -->
+<section class="section" id="plansContent">
+  <!-- Rendered by JS -->
+</section>
+
+<!-- ===== Footer ===== -->
+<footer class="site-footer">
+  <p class="brand">译林方尖碑 OBELISK</p>
+  <p>铭刻值得记忆的过去 · 积书成碑 · 立碑成林</p>
+  <p style="margin-top:16px">© 2020–2026 译林出版社 · 本页面由书友整理，数据来源为公开信息</p>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/utils.js"></script>
+<script>
+  const container = document.getElementById('plansContent');
+  const planOrder = ['世界史', '方小碑', '典藏版', '在故宫', '山海'];
+
+  let html = '<div class="section-divider"></div>';
+
+  planOrder.forEach(key => {
+    const plan = plans[key];
+    if (!plan) return;
+
+    html += `
+      <div class="subseries-header" id="${key}">
+        <h3>${plan.icon} ${plan.name}</h3>
+        <p>${plan.desc || '即将出版，敬请期待'}</p>
+      </div>
+      <div class="book-grid" style="margin-bottom:40px">
+        ${plan.items.map((item, i) => renderPlanCard(item, i, key)).join('')}
+      </div>
+    `;
+  });
+
+  html += `
+    <div class="plan-section" style="border-left-color:var(--green);margin-top:24px">
+      <h2>📊 已出版统计</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:16px" id="statsGrid"></div>
+    </div>
+  `;
+
+  container.innerHTML = html;
+
+  const counts = getSeriesCounts();
+  const allSeries = getAllSeries();
+  const statsGrid = document.getElementById('statsGrid');
+  allSeries.forEach(s => {
+    const info = getSeriesInfo(s);
+    const count = counts[s] || 0;
+    const sortedBooks = getBooksBySeries(s).sort((a, b) => a.id.localeCompare(b.id));
+    const latest = sortedBooks[sortedBooks.length - 1];
+    statsGrid.innerHTML += `
+      <div style="text-align:center;padding:16px;background:var(--stone);border-radius:var(--radius)">
+        <div style="font-size:2rem">${info.icon}</div>
+        <div style="font-weight:700;font-size:1.3rem;color:var(--ink)">${count}</div>
+        <div style="font-size:.85rem;color:var(--ink-light)">${info.name}</div>
+        <div style="font-size:.75rem;color:var(--ink-lighter);margin-top:4px">最新：${latest ? latest.pubDate : '—'}</div>
+      </div>
+    `;
+  });
+</script>
+
+</body>
+</html>

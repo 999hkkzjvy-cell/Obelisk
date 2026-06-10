@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="译林方尖碑书籍详情">
+<title>书籍详情 — 译林方尖碑 OBELISK</title>
+<link rel="preload" as="image" href="images/方尖碑LOGO.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===== Top Navigation ===== -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand"><img src="images/方尖碑LOGO.png" alt="方尖碑" class="logo-icon"> 译林方尖碑</a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="菜单">☰</button>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="catalog.html">书目</a>
+      <a href="plans.html">出版计划</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== Detail Content ===== -->
+<main class="detail-page section" id="detailContent">
+  <!-- Rendered by JS -->
+</main>
+
+<!-- ===== Footer ===== -->
+<footer class="site-footer">
+  <p class="brand">译林方尖碑 OBELISK</p>
+  <p>铭刻值得记忆的过去 · 积书成碑 · 立碑成林</p>
+  <p style="margin-top:16px">© 2020–2026 译林出版社 · 本页面由书友整理，数据来源为公开信息</p>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/utils.js"></script>
+<script>
+  const container = document.getElementById('detailContent');
+  const bookId = getUrlParam('id');
+
+  if (!bookId) {
+    container.innerHTML = `
+      <div class="error-state">
+        <div class="icon">📖</div>
+        <h2>未指定书籍</h2>
+        <p>请从<a href="catalog.html">书目页</a>选择一本书查看详情。</p>
+      </div>
+    `;
+  } else {
+    const book = getBookById(bookId);
+
+    if (!book) {
+      container.innerHTML = `
+        <div class="error-state">
+          <div class="icon">🔍</div>
+          <h2>未找到书籍</h2>
+          <p>未找到编号为 "${bookId}" 的书籍。请检查链接是否正确，或返回<a href="catalog.html">书目页</a>浏览。</p>
+        </div>
+      `;
+    } else {
+      renderDetail(book);
+    }
+  }
+
+  function renderDetail(book) {
+    document.title = `${book.title} — 译林方尖碑 OBELISK`;
+    document.querySelector('meta[name="description"]').content = `${book.title}，${book.author}著，${book.desc.substring(0, 120)}...`;
+
+    const coverSrc = book.coverImage
+      ? `images/${book.coverImage}`
+      : null;
+
+    const seriesInfo = getSeriesInfo(book.series);
+    const translatorHtml = book.translator && book.translator !== '—'
+      ? `<div class="meta-item"><span class="meta-label">译者</span><span class="meta-value">${book.translator}</span></div>`
+      : '';
+
+    const ratingDisplay = book.rating === '—'
+      ? '<span style="color:var(--ink-lighter)">暂无评分</span>'
+      : `⭐ <strong>${book.rating}</strong> / 10`;
+
+    const seriesLink = `<a href="catalog.html?series=${encodeURIComponent(book.series)}">${seriesInfo.name}</a>`;
+
+    // Related books
+    const related = getRelatedBooks(book, 4);
+
+    container.innerHTML = `
+      <a href="catalog.html" class="detail-back">← 返回书目总览</a>
+
+      <div class="detail-main">
+        <div class="detail-cover">
+          ${coverSrc
+            ? `<img src="${coverSrc}" alt="${book.title}" onerror="this.parentElement.innerHTML='<div class=\\'no-cover\\'>${book.title}</div>'">`
+            : `<div class="no-cover">${book.title}</div>`
+          }
+        </div>
+
+        <div class="detail-info">
+          <h1>${book.title}</h1>
+          <p class="subtitle">${seriesInfo.icon} ${seriesLink} · 编号 ${book.id.replace(/[^0-9]/g, '')} · ${book.pubDate}</p>
+
+          <div class="detail-meta">
+            <div class="meta-item">
+              <span class="meta-label">作者</span>
+              <span class="meta-value">${book.author} ${book.nationality}</span>
+            </div>
+            ${translatorHtml}
+            <div class="meta-item">
+              <span class="meta-label">出版时间</span>
+              <span class="meta-value">${book.pubDate}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">豆瓣评分</span>
+              <span class="meta-value">${ratingDisplay}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">所属系列</span>
+              <span class="meta-value">${seriesInfo.icon} ${seriesInfo.name}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">出版社</span>
+              <span class="meta-value">译林出版社</span>
+            </div>
+          </div>
+
+          <div class="detail-desc">
+            <h3 style="font-family:var(--serif);margin-bottom:12px;font-size:1.1rem">📖 内容简介</h3>
+            <p>${book.desc}</p>
+          </div>
+
+          <div class="detail-actions">
+            <a href="${getDoubanUrl(book)}" target="_blank" rel="noopener" class="btn btn-douban">📖 在豆瓣查看</a>
+            <a href="${getJDUrl(book)}" target="_blank" rel="noopener" class="btn btn-jd">🛒 在京东搜索</a>
+          </div>
+        </div>
+      </div>
+
+      ${related.length > 0 ? `
+      <div class="related-books">
+        <h3>📚 您可能也会喜欢</h3>
+        <div class="related-grid">
+          ${related.map(r => {
+            const rCoverSrc = r.coverImage ? `images/${r.coverImage}` : null;
+            return `
+              <a href="detail.html?id=${encodeURIComponent(r.id)}" class="related-card">
+                <div class="mini-cover">
+                  ${rCoverSrc ? `<img src="${rCoverSrc}" alt="${r.title}" loading="lazy">` : ''}
+                </div>
+                <h4>${r.title}</h4>
+                <div class="meta">${r.author} · ⭐${r.rating}</div>
+              </a>
+            `;
+          }).join('')}
+        </div>
+      </div>
+      ` : ''}
+    `;
+  }
+</script>
+
+</body>
+</html>
