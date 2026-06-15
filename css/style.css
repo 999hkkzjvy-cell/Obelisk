@@ -1293,3 +1293,44 @@ img {
   background: #2a2520;
   border: 1px solid var(--stone-dark);
 }
+
+/* Nav stays light-on-dark in both themes */
+[data-theme="dark"] .site-nav {
+  background: rgba(16,14,10,0.97);
+}
+[data-theme="dark"] .nav-links a { color: #e0d8c8; }
+[data-theme="dark"] .nav-links a:hover,
+[data-theme="dark"] .nav-links a.active {
+  background: rgba(201,168,76,0.25);
+  color: var(--gold-light);
+}
+[data-theme="dark"] .nav-brand { color: var(--gold-light) !important; }
+[data-theme="dark"] .nav-links.open { background: rgba(16,14,10,0.99); }
+[data-theme="dark"] .nav-search input {
+  background: rgba(255,255,255,0.06);
+  color: #e0d8c8;
+  border-color: rgba(201,168,76,0.2);
+}
+[data-theme="dark"] .nav-search input:focus {
+  background: rgba(255,255,255,0.12);
+  border-color: var(--gold);
+}
+[data-theme="dark"] .nav-search input::placeholder { color: rgba(255,255,255,0.25); }
+
+/* Footer also stays light-on-dark */
+[data-theme="dark"] .site-footer { background: #100e0a; color: #c0b8a8; }
+
+/* Filter buttons */
+[data-theme="dark"] .filter-btn { background: var(--white); border-color: var(--stone-dark); }
+[data-theme="dark"] .filter-btn:hover,
+[data-theme="dark"] .filter-btn.active { background: var(--ink); color: var(--gold-light); }
+
+/* Detail meta */
+[data-theme="dark"] .detail-meta { background: var(--stone); }
+
+/* Plan section stats */
+[data-theme="dark"] .plan-section table th { background: #3d3630; }
+
+/* Book card links */
+[data-theme="dark"] .book-info h3 a { color: var(--ink); }
+[data-theme="dark"] .book-info h3 a:hover { color: var(--gold); }
