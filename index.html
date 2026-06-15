@@ -90,8 +90,10 @@
   <p style="margin-top:16px">© 2020–2026 译林出版社 · 本页面由书友整理，数据来源为公开信息</p>
 </footer>
 
-<script src="js/data.js"></script>
-<script src="js/utils.js"></script>
+<script src="js/data.js">
+</script>
+<script src="js/utils.js">
+</script>
 <script>
   // Hero stats
   const seriesCounts = getSeriesCounts();
@@ -137,6 +139,8 @@
     .slice(0, 6);
 
   document.getElementById('featuredGrid').innerHTML = featured.map(b => renderBookCard(b)).join('');
+initNavSearch();
+initThemeToggle();
 </script>
 
 </body>

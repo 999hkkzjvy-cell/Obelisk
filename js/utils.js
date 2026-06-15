@@ -151,6 +151,161 @@ function renderPlanCard(item, index, seriesKey) {
   `;
 }
 
+/** 全站搜索：在 books + plans 中搜索 */
+function searchAll(query) {
+  if (!query || query.length < 1) return [];
+  const q = query.toLowerCase();
+  const results = [];
+
+  // Search published books
+  books.forEach(b => {
+    if (b.title.toLowerCase().includes(q) ||
+        b.author.toLowerCase().includes(q) ||
+        b.translator.toLowerCase().includes(q)) {
+      results.push({
+        type: 'book',
+        id: b.id,
+        title: b.title,
+        author: b.author,
+        cover: b.coverImage ? 'images/' + b.coverImage : null,
+        url: 'detail.html?id=' + encodeURIComponent(b.id),
+        label: getSeriesInfo(b.series).name
+      });
+    }
+  });
+
+  // Search plans
+  Object.keys(plans).forEach(key => {
+    plans[key].items.forEach(item => {
+      if (item.title.toLowerCase().includes(q) ||
+          item.author.toLowerCase().includes(q)) {
+        results.push({
+          type: 'plan',
+          title: item.title,
+          author: item.author,
+          cover: null,
+          url: 'plans.html#' + key,
+          label: plans[key].name
+        });
+      }
+    });
+  });
+
+  return results.slice(0, 8);
+}
+
+/** 初始化导航栏搜索 */
+function initNavSearch() {
+  const nav = document.querySelector('.site-nav .nav-inner');
+  if (!nav || document.querySelector('.nav-search')) return;
+
+  const searchHtml = `
+    <div class="nav-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="navSearchInput" placeholder="搜索书名、作者…" autocomplete="off">
+      <div class="search-results" id="navSearchResults"></div>
+    </div>
+  `;
+
+  // Insert search before the toggle button
+  const toggle = nav.querySelector('.nav-toggle');
+  if (toggle) {
+    toggle.insertAdjacentHTML('beforebegin', searchHtml);
+  } else {
+    nav.insertAdjacentHTML('beforeend', searchHtml);
+  }
+
+  const input = document.getElementById('navSearchInput');
+  const results = document.getElementById('navSearchResults');
+  let activeIndex = -1;
+
+  input.addEventListener('input', function() {
+    const hits = searchAll(this.value.trim());
+    if (hits.length === 0) {
+      results.classList.remove('visible');
+      results.innerHTML = '';
+      activeIndex = -1;
+      return;
+    }
+
+    activeIndex = -1;
+    results.innerHTML = hits.map((h, i) => {
+      const coverHtml = h.cover
+        ? `<img class="search-mini-cover" src="${h.cover}" alt="">`
+        : `<div class="search-mini-cover" style="background:linear-gradient(135deg,#3a2818,#5c3d2e)"></div>`;
+      return `
+        <a href="${h.url}" class="search-result-item" data-index="${i}">
+          ${coverHtml}
+          <div class="search-result-info">
+            <div class="srt-title">${h.title}</div>
+            <div class="srt-meta">${h.author}</div>
+          </div>
+          <span class="search-result-badge">${h.label}</span>
+        </a>
+      `;
+    }).join('');
+    results.classList.add('visible');
+  });
+
+  // Keyboard navigation
+  input.addEventListener('keydown', function(e) {
+    const items = results.querySelectorAll('.search-result-item');
+    if (e.key === 'ArrowDown') { e.preventDefault(); activeIndex = Math.min(activeIndex + 1, items.length - 1); updateActive(items); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); activeIndex = Math.max(activeIndex - 1, 0); updateActive(items); }
+    else if (e.key === 'Enter' && activeIndex >= 0) { e.preventDefault(); items[activeIndex].click(); }
+    else if (e.key === 'Escape') { results.classList.remove('visible'); input.blur(); }
+  });
+
+  function updateActive(items) {
+    items.forEach(i => i.classList.remove('active'));
+    if (activeIndex >= 0 && activeIndex < items.length) {
+      items[activeIndex].classList.add('active');
+      items[activeIndex].scrollIntoView({ block: 'nearest' });
+    }
+  }
+
+  // Click outside to close
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.nav-search')) {
+      results.classList.remove('visible');
+    }
+  });
+}
+
+/** 初始化暗色模式切换 */
+function initThemeToggle() {
+  const nav = document.querySelector('.site-nav .nav-inner');
+  if (!nav || document.querySelector('.theme-toggle')) return;
+
+  const btn = document.createElement('button');
+  btn.className = 'theme-toggle';
+  btn.title = '切换暗色模式';
+  btn.textContent = '🌙';
+
+  const links = nav.querySelector('.nav-links');
+  if (links) links.appendChild(btn);
+
+  // Load saved preference
+  const saved = localStorage.getItem('obelisk-theme');
+  if (saved === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    btn.textContent = '☀️';
+  }
+
+  btn.addEventListener('click', function() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+      document.documentElement.removeAttribute('data-theme');
+      btn.textContent = '🌙';
+      localStorage.setItem('obelisk-theme', 'light');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      btn.textContent = '☀️';
+      localStorage.setItem('obelisk-theme', 'dark');
+    }
+  });
+}
+
 /** 获取各系列书籍数量 */
 function getSeriesCounts() {
   const counts = {};
