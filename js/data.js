@@ -23,20 +23,37 @@ const brand = {
   }
 };
 
+// ========== 统一图标库（全部 SVG，viewBox 0 0 24 24） ==========
+const iconSVG = {
+  // --- 系列图标 ---
+  world:      '<svg viewBox="0 0 24 24" style="width:1em;height:1em;vertical-align:middle"><rect x="7" y="3" width="10" height="19" rx="1.5" fill="#7BA0BC"/><rect x="5" y="3" width="14" height="2.5" rx="1" fill="#5B7A9A"/><rect x="7" y="9" width="10" height="1.5" rx="0.5" fill="#5B7A9A"/><rect x="7" y="14" width="10" height="1.5" rx="0.5" fill="#5B7A9A"/></svg>',
+  book:       '<svg viewBox="0 0 24 24" style="width:1em;height:1em;vertical-align:middle"><path d="M5 4h5l2 2.5L14 4h5v15H5V4z" fill="#8B7355"/><path d="M12 4v15" stroke="#6B5B45" stroke-width="2"/></svg>',
+  gugong:     '<svg viewBox="0 0 24 24" style="width:1em;height:1em;vertical-align:middle"><path d="M2 9L5 6L12 3L19 6L22 9H18V7H6v2H2z" fill="#D4A017"/><rect x="5" y="9" width="14" height="12" rx="1" fill="#C41E3A"/><rect x="9" y="13" width="6" height="8" rx="2" fill="#8B1A1A"/></svg>',
+  diamond:    '<svg viewBox="0 0 24 24" style="width:1em;height:1em;vertical-align:middle"><path d="M12 1.5L15.5 8 22 9.5 17 14.5l1.5 8L12 19l-6.5 3.5L7 14.5 2 9.5 8.5 8z" fill="#D4A017"/></svg>',
+  mountain:   '<svg viewBox="0 0 24 24" style="width:1em;height:1em;vertical-align:middle"><path d="M1 21l6-11 4 6 5-9 7 14H1z" fill="#6B8E6B"/></svg>',
+  // --- 链接 / 功能图标 ---
+  grid:       '<svg viewBox="0 0 24 24" style="width:1em;height:1em;vertical-align:middle"><rect x="3" y="2" width="8" height="8" rx="1.5" fill="#6B8EAA"/><rect x="13" y="2" width="8" height="8" rx="1.5" fill="#8B7355"/><rect x="3" y="13" width="8" height="8" rx="1.5" fill="#8B7355"/><rect x="13" y="13" width="8" height="8" rx="1.5" fill="#C41E3A"/></svg>',
+  douban:     '<svg viewBox="0 0 24 24" style="width:1em;height:1em;vertical-align:middle"><rect x="5" y="15" width="14" height="2.5" rx="0.5" fill="#4A8C3F"/><rect x="4" y="10" width="16" height="2.5" rx="0.5" fill="#5DA04F"/><rect x="6" y="5" width="12" height="2.5" rx="0.5" fill="#3D7A33"/></svg>',
+  publisher:  '<svg viewBox="0 0 24 24" style="width:1em;height:1em;vertical-align:middle"><path d="M4 11L12 3l8 8H4z" fill="#6B8EAA"/><rect x="5" y="11" width="14" height="11" rx="1" fill="#7BA0BC"/><rect x="10" y="15" width="4" height="7" rx="1" fill="#5B7A9A"/></svg>',
+  broadcast:  '<svg viewBox="0 0 24 24" style="width:1em;height:1em;vertical-align:middle"><rect x="4" y="7" width="11" height="10" rx="2" fill="#E8614C"/><path d="M15 9l6-3v10l-6-3V9z" fill="#D4503C"/></svg>',
+  play:       '<svg viewBox="0 0 24 24" style="width:1em;height:1em;vertical-align:middle"><rect x="2" y="4" width="20" height="14" rx="2" fill="#FB7299"/><path d="M10 8l6 4-6 4V8z" fill="#fff"/></svg>',
+  chat:       '<svg viewBox="0 0 24 24" style="width:1em;height:1em;vertical-align:middle"><path d="M4 4h16a2 2 0 012 2v11a2 2 0 01-2 2h-3l-4 4-4-4H4a2 2 0 01-2-2V6a2 2 0 012-2z" fill="#4CAF50"/><circle cx="8" cy="11" r="1.5" fill="#fff"/><circle cx="12" cy="11" r="1.5" fill="#fff"/><circle cx="16" cy="11" r="1.5" fill="#fff"/></svg>',
+};
+
 const seriesInfo = {
   '世界史': {
     name: '方尖碑·世界史系列',
-    icon: '🏛',
+    icon: iconSVG.world,
     desc: '以世界史为起点，精选地区国别史、战争史、城市史等名家名作。'
   },
   '方小碑': {
     name: '方小碑·文化史系列',
-    icon: '📖',
+    icon: iconSVG.book,
     desc: '轻量级文化史子系列，统一布面精装设计，与正传世界史系列形成互补。'
   },
   '在故宫': {
     name: '在故宫系列',
-    icon: '<svg viewBox="0 0 24 24" style="width:1em;height:1em;vertical-align:middle"><path d="M2 9L5 6L12 3L19 6L22 9H18V7H6v2H2z" fill="#D4A017"/><rect x="5" y="9" width="14" height="12" rx="1" fill="#C41E3A"/><rect x="9" y="13" width="6" height="8" rx="2" fill="#8B1A1A"/></svg>',
+    icon: iconSVG.gugong,
     desc: '与故宫博物院合作推出，立足"故宫人讲故宫"特色。'
   }
 };
@@ -404,7 +421,7 @@ const books = [
 // ========== 出版计划 ==========
 const plans = {
   '世界史': {
-    icon: '🏛',
+    icon: iconSVG.world,
     name: '方尖碑·世界史系列（待出版）',
     items: [
       {
@@ -435,7 +452,7 @@ const plans = {
     ]
   },
   '方小碑': {
-    icon: '📖',
+    icon: iconSVG.book,
     name: '方小碑·文化史系列（待出版）',
     items: [
       {
@@ -466,7 +483,7 @@ const plans = {
     ]
   },
   '典藏版': {
-    icon: '✨',
+    icon: iconSVG.diamond,
     name: '方尖碑·典藏版（待出版）',
     items: [
       {
@@ -477,7 +494,7 @@ const plans = {
     ]
   },
   '在故宫': {
-    icon: '<svg viewBox="0 0 24 24" style="width:1em;height:1em;vertical-align:middle"><path d="M2 9L5 6L12 3L19 6L22 9H18V7H6v2H2z" fill="#D4A017"/><rect x="5" y="9" width="14" height="12" rx="1" fill="#C41E3A"/><rect x="9" y="13" width="6" height="8" rx="2" fill="#8B1A1A"/></svg>',
+    icon: iconSVG.gugong,
     name: '在故宫系列（待出版）',
     items: [
       {
@@ -508,7 +525,7 @@ const plans = {
     ]
   },
   '山海': {
-    icon: '⛰️',
+    icon: iconSVG.mountain,
     name: '山海系列（全新子系列·待出版）',
     items: [
       {
