@@ -36,7 +36,7 @@ const seriesInfo = {
   },
   '在故宫': {
     name: '在故宫系列',
-    icon: '🏯',
+    icon: '<svg viewBox="0 0 24 24" style="width:1em;height:1em;vertical-align:middle"><path d="M2 9L5 6L12 3L19 6L22 9H18V7H6v2H2z" fill="#D4A017"/><rect x="5" y="9" width="14" height="12" rx="1" fill="#C41E3A"/><rect x="9" y="13" width="6" height="8" rx="2" fill="#8B1A1A"/></svg>',
     desc: '与故宫博物院合作推出，立足"故宫人讲故宫"特色。'
   }
 };
@@ -477,7 +477,7 @@ const plans = {
     ]
   },
   '在故宫': {
-    icon: '🏯',
+    icon: '<svg viewBox="0 0 24 24" style="width:1em;height:1em;vertical-align:middle"><path d="M2 9L5 6L12 3L19 6L22 9H18V7H6v2H2z" fill="#D4A017"/><rect x="5" y="9" width="14" height="12" rx="1" fill="#C41E3A"/><rect x="9" y="13" width="6" height="8" rx="2" fill="#8B1A1A"/></svg>',
     name: '在故宫系列（待出版）',
     items: [
       {
